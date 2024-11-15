@@ -8,12 +8,13 @@
         />
 
     <item
-    android:id="@+id/profile"
-    android:icon="@drawable/baseline_person_24"
-    android:title="Profile"/>
+        android:id="@+id/meusIngressos"
+        android:icon="@drawable/tickets"
+        android:title="Meus Ingressos" />
 
     <item
-    android:id="@+id/settings"
-    android:icon="@drawable/baseline_settings_24"
-    android:title="Settings" />
+        android:id="@+id/profile"
+        android:icon="@drawable/baseline_person_24"
+        android:title="Perfil" />
+
 </menu>
