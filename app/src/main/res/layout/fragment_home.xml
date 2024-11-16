@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,17 +9,18 @@
     tools:context=".HomeFragment">
 
     <!-- TODO: Update blank fragment layout -->
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="22dp"
         android:background="#FFFFFF"
         android:gravity="center|top"
         android:paddingTop="22dp"
-        android:text="Decks da Comunidade"
+        android:text="Eventz"
         android:textColor="@color/black"
         android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="22dp"  />
+        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/listView"
@@ -35,7 +37,15 @@
         android:dividerHeight="16dp"
 
 
-        />
+        >
+
+    </ListView>
+
+    <Button
+        android:id="@+id/btnCriarEvento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+" />
 
 
 </RelativeLayout>

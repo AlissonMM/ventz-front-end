@@ -110,7 +110,7 @@ public class Evento {
         this.ingressosUtilizados = ingressosUtilizados;
     }
 
-    // Método toString
+    // Metodo toString
     @Override
     public String toString() {
         return "Evento{" +

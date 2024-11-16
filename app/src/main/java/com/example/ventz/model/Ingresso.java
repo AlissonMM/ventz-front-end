@@ -55,7 +55,7 @@ public class Ingresso {
         this.disponivel = disponivel;
     }
 
-    // Método toString
+    // MÃ©todo toString
     @Override
     public String toString() {
         return "Ingresso{" +

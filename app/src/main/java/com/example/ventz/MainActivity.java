@@ -5,24 +5,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.android.volley.Request;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.ventz.databinding.ActivityMainBinding;
-import com.example.ventz.model.Dados;
-import com.example.ventz.model.Deck;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 }, 0);
             } else if (itemId == R.id.meusIngressos) {
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    replaceFragment(new DecksFragment());
+                    replaceFragment(new IngressosFragment());
                 }, 0);
             }
 
