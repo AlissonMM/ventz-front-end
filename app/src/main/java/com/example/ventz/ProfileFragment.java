@@ -1,10 +1,12 @@
 package com.example.ventz;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +14,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.ventz.model.Dados;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -82,12 +75,13 @@ public class ProfileFragment extends Fragment {
         TextView labelNome = view.findViewById(R.id.labelNome);
         TextView labelEmail = view.findViewById(R.id.labelEmail);
 
-        ImageButton myImageButton = view.findViewById(R.id.imageButton);
+        ImageButton ibScan = view.findViewById(R.id.ibScan);
         // add event to myImageButton
-        myImageButton.setOnClickListener(new View.OnClickListener() {
+        ibScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(requireContext(), "Abrindo leitor de QR Code...", Toast.LENGTH_SHORT).show();
+                scanCode();
             }
         });
 
@@ -127,4 +121,33 @@ public class ProfileFragment extends Fragment {
 //        return inflater.inflate(R.layout.fragment_profile, container, false);
         return view;
     }
+
+
+    private void scanCode() {
+        ScanOptions options = new ScanOptions();
+
+
+        options.setPrompt("< Volume up > para usar o flash");
+        options.setBeepEnabled(true);
+        options.setOrientationLocked(true);
+        options.setCaptureActivity(CaptureAct.class);
+        barLauncher.launch(options);
+    }
+
+    private String qrResult;
+    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Resultado");
+        builder.setMessage(result.getContents());
+
+        qrResult = result.getContents(); // #######
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        }).show();
+
+    });
 }

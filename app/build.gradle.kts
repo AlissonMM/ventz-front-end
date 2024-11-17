@@ -52,6 +52,7 @@ dependencies {
     implementation(kotlin("script-runtime"))
 
     implementation(libs.volley)
+    implementation (libs.zxing.android.embedded)
 
     
 }
