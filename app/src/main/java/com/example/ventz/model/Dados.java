@@ -4,8 +4,10 @@ public class Dados {
     private static Dados instance;
     private String url;
     private int idUsuarioLogado;
-    private int idDeckAtual;
-    private String nomeDeckAtual;
+    private int idEventoAtual;
+    private String nomeEventoAtual;
+    
+    private int idIngressoAtual;
 
     private Dados() { }
 
@@ -21,20 +23,12 @@ public class Dados {
         Dados.instance = instance;
     }
 
-    public String getNomeDeckAtual() {
-        return nomeDeckAtual;
+    public String getUrl() {
+        return url;
     }
 
-    public void setNomeDeckAtual(String nomeDeckAtual) {
-        this.nomeDeckAtual = nomeDeckAtual;
-    }
-
-    public int getIdDeckAtual() {
-        return idDeckAtual;
-    }
-
-    public void setIdDeckAtual(int idDeckAtual) {
-        this.idDeckAtual = idDeckAtual;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public int getIdUsuarioLogado() {
@@ -45,11 +39,27 @@ public class Dados {
         this.idUsuarioLogado = idUsuarioLogado;
     }
 
-    public String getUrl() {
-        return url;
+    public int getIdEventoAtual() {
+        return idEventoAtual;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setIdEventoAtual(int idEventoAtual) {
+        this.idEventoAtual = idEventoAtual;
+    }
+
+    public String getNomeEventoAtual() {
+        return nomeEventoAtual;
+    }
+
+    public void setNomeEventoAtual(String nomeEventoAtual) {
+        this.nomeEventoAtual = nomeEventoAtual;
+    }
+
+    public int getIdIngressoAtual() {
+        return idIngressoAtual;
+    }
+
+    public void setIdIngressoAtual(int idIngressoAtual) {
+        this.idIngressoAtual = idIngressoAtual;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.ventz;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.example.ventz.model.Dados;
 import com.example.ventz.model.Deck;
 import com.example.ventz.model.Ingresso;
 import com.example.ventz.model.IngressoAdapter;
@@ -128,6 +130,21 @@ public class IngressosFragment extends Fragment {
 
         IngressoAdapter adapter = new IngressoAdapter(getContext(), ingressos);
         listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener((parent, view1, position, id) -> {
+    Intent intent = new Intent(getContext(), DeckTela.class);
+
+    // Define o evento atual no singleton Dados
+    Dados.getInstance().setIdEventoAtual(ingressos.get(position).getEvento());
+
+    // Verifica se o contexto não é nulo antes de usar
+    if (getContext() != null) {
+        Toast.makeText(getContext(), "Id Evento " + Dados.getInstance().getIdEventoAtual(), Toast.LENGTH_SHORT).show();
+    }
+
+    // Inicia a nova atividade
+    startActivity(intent);
+});
 
 
 //        Toast.makeText(getContext(), "Gerando ideias..~..~..", Toast.LENGTH_SHORT).show();

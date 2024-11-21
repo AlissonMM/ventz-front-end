@@ -37,22 +37,43 @@ android {
     }
 }
 
+
+
 dependencies {
 
-    implementation(libs.appcompat)
-    implementation(libs.material)
-    implementation(libs.activity)
-    implementation(libs.constraintlayout)
-    implementation(libs.annotation)
-    implementation(libs.lifecycle.livedata.ktx)
-    implementation(libs.lifecycle.viewmodel.ktx)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
-    implementation(kotlin("script-runtime"))
 
-    implementation(libs.volley)
-    implementation (libs.zxing.android.embedded)
+implementation(libs.appcompat)
+implementation(libs.material)
+implementation(libs.activity)
+implementation(libs.constraintlayout)
+implementation(libs.annotation)
+implementation(libs.lifecycle.livedata.ktx)
+implementation(libs.lifecycle.viewmodel.ktx)
+
+
+testImplementation(libs.junit)
+androidTestImplementation(libs.ext.junit)
+androidTestImplementation(libs.espresso.core)
+
+
+implementation(kotlin("script-runtime"))
+
+
+implementation(libs.volley)
+
+
+implementation(libs.zxing.android.embedded)
+implementation(libs.xzxing.android.embedded)
+implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+
+
+coreLibraryDesugaring(libs.desugar.jdk.libs)
+coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.2")
+
+// Multidex for large projects
+implementation(libs.multidex)
+implementation("androidx.multidex:multidex:2.0.1")
+
 
     
 }

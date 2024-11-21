@@ -15,33 +15,11 @@
         android:layout_height="match_parent"
         android:backgroundTint="#546DA5">
 
-        <ListView
-            android:id="@+id/listViewCard"
-            android:layout_width="250dp"
-            android:layout_height="542dp"
-
-
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
-
-
-            android:background="#FFFFFF"
-            android:divider="@android:color/transparent"
-
-
-            android:dividerHeight="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.582" />
-
         <TextView
-            android:id="@+id/labelNomeDeck"
+            android:id="@+id/labelNomeEvento"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Meu Pequeno Deck"
+            android:text="Meu Pequeno Evento"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -50,16 +28,108 @@
             app:layout_constraintVertical_bias="0.102" />
 
         <TextView
-            android:id="@+id/qttCards"
+            android:id="@+id/labelEndereco"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="carregando quantidade..."
+            android:text="endereco"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.154" />
+
+        <TextView
+            android:id="@+id/labelDataInicio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Data de Início"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.152"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.262" />
+
+        <TextView
+            android:id="@+id/labelDataEncerramento"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Data de Encerramento"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.729"
+            app:layout_constraintStart_toEndOf="@+id/labelDataInicio"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.262" />
+
+        <TextView
+            android:id="@+id/txtDataInicioIngresso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="xx/xx/xxxx xx"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.134"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.3" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="380dp"
+            android:text="yy/yy/yyyy yy"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.691"
+            app:layout_constraintStart_toEndOf="@+id/txtDataInicioIngresso"
+            app:layout_constraintTop_toBottomOf="@+id/labelDataEncerramento"
+            app:layout_constraintVertical_bias="0.063" />
+
+        <EditText
+            android:id="@+id/editTextTextMultiLine2"
+            android:layout_width="364dp"
+            android:layout_height="240dp"
+            android:ems="10"
+            android:enabled="false"
+            android:focusable="false"
+            android:freezesText="false"
+            android:gravity="start|top"
+            android:hint="LOREM IPSUM"
+            android:inputType="textMultiLine"
+            android:longClickable="false"
+            android:textIsSelectable="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.491"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.498" />
+
+        <ImageView
+            android:id="@+id/imageViewQrCode"
+            android:layout_width="214dp"
+            android:layout_height="200dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine2"
+            app:srcCompat="@drawable/yasuo" />
+
+        <TextView
+            android:id="@+id/txtIdIngresso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="bunda"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.065"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.713" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -41,7 +41,7 @@ public class CriarCardTela extends AppCompatActivity {
 
 
         // Obter ID do deck atual (o que foi clicado na listView
-               int idDeckAtual = Dados.getInstance().getIdDeckAtual();
+//               int idDeckAtual = Dados.getInstance().getIdDeckAtual();
 
 
 
@@ -52,7 +52,7 @@ public class CriarCardTela extends AppCompatActivity {
             String pergunta = txtPergunta.getText().toString();
             String resposta = txResposta.getText().toString();
 // AQUI AQUI AQUI AQUI
-           inserirCardNoDeck(pergunta, resposta, idDeckAtual);
+//           inserirCardNoDeck(pergunta, resposta, idDeckAtual);
             Intent intent = new Intent(CriarCardTela.this, DeckTela.class);
             startActivity(intent);
            finish();
