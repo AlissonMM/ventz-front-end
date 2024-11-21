@@ -44,8 +44,9 @@ public class DeckTela extends AppCompatActivity {
 
             imageViewQrCode.setImageBitmap(bitmap);
 
-            }catch (WriterException e){
-            throw new RuntimeException(e);
+            }catch (WriterException e) {
+                throw new RuntimeException(e);
+            }
 
 //         labelNomeEvento.setText("Id do evento: " + idEventoAtual);
 
