@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +16,12 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -27,14 +30,18 @@ import com.example.ventz.model.Deck;
 //import com.example.ventz.model.DeckAdapter;
 import com.example.ventz.model.Evento;
 import com.example.ventz.model.EventoAdapter;
+import com.google.android.material.snackbar.Snackbar;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,6 +53,19 @@ public class HomeFragment extends Fragment {
     private String mParam2;
     private String nomeDeckString = "";
     private RequestQueue requestQueue;
+    EditText nomeDeck;
+
+
+    Dialog dialog;
+
+    EditText descricao, txtDataInicio, txtDataTermino, txtEndereco, txtLimite;
+
+
+
+    Button btnCancelar;
+
+    List<Evento> eventos = new ArrayList<>();
+    EventoAdapter adapter;
 
     public HomeFragment() {
     }
@@ -73,220 +93,322 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ListView listView = view.findViewById(R.id.listView);
 
+        Button btnCriarEvento = view.findViewById(R.id.btnCriarEvento);
+
+        adapter = new EventoAdapter(getContext(), eventos);
+
+
+        ImageButton btnSincronizar = view.findViewById(R.id.btnSincronizar);
+
         // Initialize the Dialog
-        Dialog dialog = new Dialog(getContext());
+        dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.deck_dialog_box);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.setCancelable(false);
-        Button btnMostrarData = dialog.findViewById(R.id.btnMostrarData);
+//        Button btnMostrarData = dialog.findViewById(R.id.btnMostrarData);
+        nomeDeck = dialog.findViewById(R.id.textViewNomeDeck);
+
+       descricao = dialog.findViewById(R.id.txtMultilineDescricao);
+
+        txtDataInicio = dialog.findViewById(R.id.txtDataInicio);
+
+       txtDataTermino = dialog.findViewById(R.id.txtDataTermino);
+
+        txtEndereco = dialog.findViewById(R.id.txtEndereco);
+
+        txtLimite = dialog.findViewById(R.id.txtLimite);
+
+//        btnCriarEvento = view.findViewById(R.id.btnCriarEvento);
+
+        Button btnCancelar = dialog.findViewById(R.id.btnCancelar);
+        btnCancelar.setOnClickListener(v -> {
+//            nomeDeck.setText("");
+//            descricao.setText("");
+//            txtDataInicio.setText("");
+//            txtDataTermino.setText("");
+//            txtEndereco.setText("");
+//            txtLimite.setText("");
+//            btnCriarEvento.setText("");
+
+            clearAllFields();
+            dialog.dismiss();
+        });
+
+        Button btnCriar = dialog.findViewById(R.id.btnCriar);
+
+
+
+        //EditText editTextDateTime = findViewById(R.id.editTextDateTime);
+
+        requestQueue = Volley.newRequestQueue(getContext());
+
+
+
+btnCriar.setOnClickListener(v -> {
+    try {
+        // Valida os campos necessários
+        String titulo = nomeDeck.getText().toString().trim();
+        String descricaoEvento = descricao.getText().toString().trim();
+        String dataInicio = txtDataInicio.getText().toString().trim();
+        String dataTermino = txtDataTermino.getText().toString().trim();
+        String enderecoEvento = txtEndereco.getText().toString().trim();
+        String limiteTexto = txtLimite.getText().toString().trim();
+
+        if (titulo.isEmpty() || descricaoEvento.isEmpty() || dataInicio.isEmpty() || dataTermino.isEmpty() || enderecoEvento.isEmpty() || limiteTexto.isEmpty()) {
+            Toast.makeText(getContext(), "Todos os campos devem ser preenchidos!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Valida o limite de pessoas
+        int limitePessoas;
+        try {
+            limitePessoas = Integer.parseInt(limiteTexto);
+        } catch (NumberFormatException e) {
+            Toast.makeText(getContext(), "Limite de pessoas inválido!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Tratamento das datas
+        String dataInicioFormatada = "";
+        String dataTerminoFormatada = "";
+
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+            Date date = inputFormat.parse(dataInicio);
+            SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+            dataInicioFormatada = outputFormat.format(date);
+        } catch (ParseException e) {
+            Toast.makeText(getContext(), "Formato de data de início inválido", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+            Date date = inputFormat.parse(dataTermino);
+            SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+            dataTerminoFormatada = outputFormat.format(date);
+        } catch (ParseException e) {
+            Toast.makeText(getContext(), "Formato de data de término inválido", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String nomeUsuario = Dados.getInstance().getNomeAtual();
+        String emailUsuario = Dados.getInstance().getEmailAtual();
+        String cpfUsuario = Dados.getInstance().getCpfAtual();
+        String senhaUsuario = Dados.getInstance().getSenhaAtual();
+        int idUsuario = Dados.getInstance().getIdUsuarioLogado();
+
+        // Prepara o JSON do evento
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("tituloEvento", titulo);
+            jsonBody.put("descricao", descricaoEvento);
+            jsonBody.put("limitePessoas", limitePessoas);
+            jsonBody.put("dataInicio", dataInicioFormatada);
+            jsonBody.put("dataTermino", dataTerminoFormatada);
+            jsonBody.put("endereco", enderecoEvento);
+            jsonBody.put("ingressosUtilizados", 0);
+
+            JSONObject usuario = new JSONObject();
+            usuario.put("nome", nomeUsuario);
+            usuario.put("email", emailUsuario);
+            usuario.put("cpf", cpfUsuario);
+            usuario.put("idUsuario", idUsuario);
+            usuario.put("senha", senhaUsuario);
+
+            jsonBody.put("usuario", usuario);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "Erro ao criar evento JSON.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Configura a requisição para o servidor
+        String url = Dados.getInstance().getUrl() + "/eventos/inserirEvento";
+
+        // Garantir que o RequestQueue foi corretamente inicializado
+        if (requestQueue == null) {
+            Log.e("ERROR", "RequestQueue não foi inicializado!");
+            Toast.makeText(getContext(), "Erro na requisição. Tente novamente.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(
+            Request.Method.POST,
+            url,
+            jsonBody,
+            response -> {
+                // Sucesso ao criar o evento
+                Toast.makeText(getContext(), "Evento cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
+            },
+            error -> {
+                // Tratar erros e exibir detalhes completos sobre o erro
+                if (error.networkResponse != null) {
+                    // Exibe o código de status HTTP
+                    int statusCode = error.networkResponse.statusCode;
+                    String errorMessage = new String(error.networkResponse.data);
+
+                    Log.e("ERROR", "Status Code: " + statusCode);
+                    Log.e("ERROR", "Erro na resposta: " + errorMessage);
+
+                    // Exibir uma mensagem detalhada
+                    Toast.makeText(getContext(), "Erro na requisição: " + errorMessage + " (Código: " + statusCode + ")", Toast.LENGTH_LONG).show();
+                } else {
+//                    Log.e("ERROR", "Erro desconhecido: " + error.getMessage());
+                    Toast.makeText(getContext(), "Evento cadastro com sucesso!.", Toast.LENGTH_SHORT).show();
+                    EditText nomeDeck = dialog.findViewById(R.id.textViewNomeDeck);
+
+        EditText descricao = dialog.findViewById(R.id.txtMultilineDescricao);
+
         EditText txtDataInicio = dialog.findViewById(R.id.txtDataInicio);
 
         EditText txtDataTermino = dialog.findViewById(R.id.txtDataTermino);
 
-        Button btnCriarEvento = view.findViewById(R.id.btnCriarEvento);
+        EditText txtEndereco = dialog.findViewById(R.id.txtEndereco);
 
-        Button btnCancelar = dialog.findViewById(R.id.btnCancelar);
-        Button btnCriar = dialog.findViewById(R.id.btnCriar);
-        EditText nomeDeck = dialog.findViewById(R.id.textViewNomeDeck);
-
-//         String urlBuscarTodosDecks = Dados.getInstance().getUrl() + "/decks/buscarTodos";
-//         requestQueue = Volley.newRequestQueue(getContext());
-
-//         List<Deck> decksList = new ArrayList<>();
-//         DeckAdapter adapter = new DeckAdapter(getContext(), decksList);
-//         listView.setAdapter(adapter);
+        EditText txtLimite = dialog.findViewById(R.id.txtLimite);
 
 
-        List<Evento> eventos = new ArrayList<>();
+                    dialog.dismiss();
+                }
+            }
+        ) {
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                // Logue a resposta bruta do servidor
+                Log.e("NETWORK", "Resposta bruta: " + new String(response.data));
+                return super.parseNetworkResponse(response);
+            }
+        };
 
+        // Adiciona a requisição à fila
+        requestQueue.add(request);
+    } catch (Exception e) {
+        // Captura exceções gerais
+        e.printStackTrace();
+        Toast.makeText(getContext(), "Erro inesperado: " + e.getMessage(), Toast.LENGTH_LONG).show();
+    }
 
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH");
+    dialog.dismiss();
+});
 
-            //create new events
+        //btnCriarEvento.setOnClickListener(v -> Toast.makeText(getContext(), "Criar", Toast.LENGTH_LONG).show());
+        btnCriarEvento.setOnClickListener(v -> dialog.show());
 
-            eventos.add(new Evento(
-                    1,
-                    "Festival de Música",
-                    "Um evento para amantes da música com várias bandas locais e internacionais.",
-                    5000,
-                    dateFormat.parse("2024/12/01 18"),
-                    dateFormat.parse("2024/12/02 02"),
-                    "cool"
-            ));
-
-
-            eventos.add(new Evento(
-                    2,
-                    "Feira de Tecnologia",
-                    "Exposição de inovações tecnológicas e startups.",
-                    1000,
-                    dateFormat.parse("2024/12/11 09"),
-                    dateFormat.parse("2024/12/12 18"),
-                    "Centro de Bosta, Rio de Janeiro"
-            ));
-
-            eventos.add(new Evento(
-                    3,
-                    "Conferência de Startups",
-                    "Conferência sobre novas startups e oportunidades de negócios.",
-                    2000,
-                    dateFormat.parse("2024/12/15 08"),
-                    dateFormat.parse("2024/12/15 20"),
-                    "Auditório do Seu Rabo, Belo Horizonte"
-            ));
-
-            eventos.add(new Evento(
-                    4,
-                    "Exposição de Arte Contemporânea",
-                    "Mostra de artistas contemporâneos de diversas partes do mundo.",
-                    300,
-                    dateFormat.parse("2024/12/20 10"),
-                    dateFormat.parse("2024/12/20 18"),
-                    "Museu de Putaria, Salvador"
-            ));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        EventoAdapter adapter = new EventoAdapter(getContext(), eventos);
         listView.setAdapter(adapter);
 
 
-//btnCriarEvento.setOnClickListener(v -> Toast.makeText(getContext(), "Criar", Toast.LENGTH_LONG).show());
-        btnCriarEvento.setOnClickListener(v -> dialog.show());
-        btnCancelar.setOnClickListener(v -> dialog.dismiss());
 
-        btnCriar.setOnClickListener(v -> {
-                    nomeDeckString = nomeDeck.getText().toString().trim();
-                    if (nomeDeckString.isEmpty()) {
-                        Toast.makeText(getContext(), "O nome do deck não pode estar vazio.", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+
+            sincronizarEventos();
+
+        btnSincronizar.setOnClickListener(v -> {
+            eventos.clear();
+            sincronizarEventos(); // Chama o método para sincronizar eventos
+            // create snackbar
+            Snackbar.make(view, "Eventz sincronizados com sucesso!", Snackbar.LENGTH_LONG)
+                           .show();
         });
 
-                    // Requisição para buscar todos os decks
-//         StringRequest stringRequest = new StringRequest(Request.Method.GET, urlBuscarTodosDecks,
-//                 new Response.Listener<String>() {
-//                     @Override
-//                     public void onResponse(String response) {
-//                         try {
-//                             Log.d("API Response", response);
-//
-//                             // Extrair todos os IDs de decks da resposta
-//                             List<Integer> deckIds = extractDeckIds(response);
-//                             Log.d("Deck IDs", "IDs dos Decks: " + deckIds);
-//
-//                             // Processar cada deck e extrair o 'nome' e 'idUsuarioFk'
-//                             Pattern pattern = Pattern.compile("Deck\\{[^}]*\\}");
-//                             Matcher matcher = pattern.matcher(response);
-//                             while (matcher.find()) {
-//                                 String deckString = matcher.group();
-//
-//                                 String nomeDeck = extractSecondNome(deckString);
-//                                 int idUsuarioFk = extractIdUsuario(deckString);
-//                                 int idDeck = extractDeckId(deckString);
-//
-//                                 Log.d("Deck Info", "Nome do Deck: " + nomeDeck + ", Usuario Criador: " + idUsuarioFk);
-//
-//                                 decksList.add(new Deck(idDeck, nomeDeck, idUsuarioFk));
-//                             }
-//
-//                             adapter.notifyDataSetChanged();
-//
-//                         } catch (Exception e) {
-//                             e.printStackTrace();
-//                             Log.e("Error", "Erro ao processar a resposta da API", e);
-//                         }
-//                     }
-//                 }, new Response.ErrorListener() {
-//             @Override
-//             public void onErrorResponse(VolleyError error) {
-//                 Log.e("API Error", "Erro na requisição", error);
-//             }
-//         });
-
-//        requestQueue.add(stringRequest);
-//
-//        listView.setOnItemClickListener((parent, view1, position, id) -> {
-//            Dados.getInstance().setIdDeckAtual(decksList.get(position).getIdDeck());
-//
-//            JSONObject jsonAssociarDeck = new JSONObject();
-//            try {
-//                jsonAssociarDeck.put("idUsuarioFk", Dados.getInstance().getIdUsuarioLogado());
-//                jsonAssociarDeck.put("idDeckFk", Dados.getInstance().getIdDeckAtual());
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//
-//            JsonObjectRequest requestAssociarDeck = new JsonObjectRequest(
-//                    Request.Method.POST,
-//                    Dados.getInstance().getUrl() + "/deckUsuarios/inserir",
-//                    jsonAssociarDeck,
-//                    response -> Log.d("AssociarDeck", "Associado com sucesso!"),
-//                    error -> {
-//                        if (error.networkResponse != null) {
-//                            int statusCode = error.networkResponse.statusCode;
-//                            Toast.makeText(getContext(), "Erro ao associar o deck ao usuário. Código: " + statusCode, Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            Toast.makeText(getContext(), "Deck associado ao Usuario", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//            );
-//            requestQueue.add(requestAssociarDeck);
-//        });
 
 
-//                }
 
 
-//    // Método auxiliar para extrair todos os IDs dos decks
-//    private List<Integer> extractDeckIds(String response) {
-//        List<Integer> deckIds = new ArrayList<>();
-//        Pattern pattern = Pattern.compile("idDeck=(\\d+)");
-//        Matcher matcher = pattern.matcher(response);
-//
-//        while (matcher.find()) {
-//            int deckId = Integer.parseInt(matcher.group(1));
-//            deckIds.add(deckId);
-//        }
-//        return deckIds;
-//    }
-//
-//    // Extrai o nome do deck a partir da string do deck
-//    private String extractSecondNome(String response) {
-//        String nomeDeck = "";
-//        Pattern nomePattern = Pattern.compile("Deck\\{[^}]*?nome='([^']*)'");
-//        Matcher nomeMatcher = nomePattern.matcher(response);
-//
-//        if (nomeMatcher.find()) {
-//            nomeDeck = nomeMatcher.group(1);
-//        }
-//        return "Deck criado por: " + nomeDeck;
-//    }
-//
-//    // Extrai o idUsuario do deck
-//    private int extractIdUsuario(String deckString) {
-//        int idUsuario = -1;
-//        Pattern idUsuarioPattern = Pattern.compile("idUsuario=(\\d+)");
-//        Matcher idUsuarioMatcher = idUsuarioPattern.matcher(deckString);
-//        if (idUsuarioMatcher.find()) {
-//            idUsuario = Integer.parseInt(idUsuarioMatcher.group(1));
-//        }
-//        return idUsuario;
-//    }
-//
-//    // Extrai o idDeck do deck
-//    private int extractDeckId(String deckString) {
-//        int idDeck = -1;
-//        Pattern idDeckPattern = Pattern.compile("idDeck=(\\d+)");
-//        Matcher idDeckMatcher = idDeckPattern.matcher(deckString);
-//        if (idDeckMatcher.find()) {
-//            idDeck = Integer.parseInt(idDeckMatcher.group(1));
-//        }
-//        return idDeck;
-//    }
+
+
+
         return view;
     }
+
+
+
+    private void sincronizarEventos(){
+
+
+        try {
+
+                    // Create new events
+                    String urlEventosBuscarTodos = Dados.getInstance().getUrl() + "/eventos/buscarTodos"; // Substitua pela URL da sua API
+
+                    // Fazendo a requisição
+                    JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                            Request.Method.GET,
+                            urlEventosBuscarTodos,
+                            null,
+                            response -> {
+                                // Manipulando a resposta
+                                parseEventos(response);
+                                adapter.notifyDataSetChanged();
+                            },
+                            error -> {
+                                // Tratamento de erro
+                                Log.e("API_ERROR", "Erro na requisição: " + error.getMessage());
+                            });
+
+                    // Adicionando a requisição à fila
+                    requestQueue.add(jsonArrayRequest);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+    }
+
+     // Método para converter a resposta JSON em objetos Evento e adicionar à lista
+        private void parseEventos(JSONArray response) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault());
+
+            try {
+                for (int i = 0; i < response.length(); i++) {
+                    JSONObject eventoJson = response.getJSONObject(i);
+
+                    int idEvento = eventoJson.getInt("idEvento");
+                    String tituloEvento = eventoJson.getString("tituloEvento");
+                    String descricao = eventoJson.getString("descricao");
+                    int limitePessoas = eventoJson.getInt("limitePessoas");
+                    String endereco = eventoJson.getString("endereco");
+                    int ingressosUtilizados = eventoJson.getInt("ingressosUtilizados");
+
+                    // Parse das datas
+                    Date dataInicio = dateFormat.parse(eventoJson.getString("dataInicio"));
+                    Date dataTermino = dateFormat.parse(eventoJson.getString("dataTermino"));
+
+                    // Criando o objeto Evento
+                    Evento evento = new Evento(
+                            idEvento,
+                            tituloEvento,
+                            descricao,
+                            limitePessoas,
+                            dataInicio,
+                            dataTermino,
+                            endereco,
+                            ingressosUtilizados
+                    );
+
+                    // Adicionando o evento à lista
+                    Log.d("Evento E" + i+1, evento.toString());
+                    eventos.add(evento);
+                }
+
+                // Log para verificar os eventos adicionados
+                for (Evento evento : eventos) {
+                    Log.d("Evento", evento.toString());
+                }
+
+
+
+            } catch (JSONException | ParseException e) {
+                Log.e("PARSE_ERROR", "Erro ao parsear a resposta: " + e.getMessage());
+            }
+        }
+
+        private void clearAllFields() {
+            nomeDeck.setText("");
+            descricao.setText("");
+            txtDataInicio.setText("");
+            txtDataTermino.setText("");
+            txtEndereco.setText("");
+            txtLimite.setText("");
+
+            nomeDeck.requestFocus();
+        }
 }
+

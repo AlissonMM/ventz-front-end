@@ -14,6 +14,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.ventz.model.Dados;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
@@ -63,6 +68,8 @@ public class ProfileFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
     }
 
     @Override
@@ -74,9 +81,18 @@ public class ProfileFragment extends Fragment {
         // Now use the inflated view to find your TextView
         TextView labelNome = view.findViewById(R.id.labelNome);
         TextView labelEmail = view.findViewById(R.id.labelEmail);
+        TextView labelCpf = view.findViewById(R.id.labelCpf);
 
         ImageButton ibScan = view.findViewById(R.id.ibScan);
+
+         labelNome.setText(Dados.getInstance().getNomeAtual());
+         labelEmail.setText(Dados.getInstance().getEmailAtual());
+        labelCpf.setText(Dados.getInstance().getCpfAtual());
+
+
         // add event to myImageButton
+
+
         ibScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,30 +104,7 @@ public class ProfileFragment extends Fragment {
         // You can now set text or other properties on txtNome
 
 
-// Get the URL and user ID from Dados
-//        String url = Dados.getInstance().getUrl() + "/usuarios/buscarPorId/" + Dados.getInstance().getIdUsuarioLogado();
-//        RequestQueue requestQueue = Volley.newRequestQueue(requireContext());
-//
-//        // Use StringRequest to get the response as a plain string
-//        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-//                response -> {
-//                    // Example response: "Usuario{idUsuario=8, nome='a', email='a', senha='a', deckUsuarios=[...]}"
-//                    try {
-//                        // Extract 'nome' and 'email' values manually
-//                        String nome = response.split("nome='")[1].split("'")[0];
-//                        String email = response.split("email='")[1].split("'")[0];
-//
-//                        // Set the extracted values to TextViews
-//                        labelNome.setText(nome);
-//                        labelEmail.setText(email);
-//
-//                    } catch (Exception e) {
-//                        Toast.makeText(requireContext(), "Error parsing data", Toast.LENGTH_SHORT).show();
-//                    }
-//                },
-//                error -> Toast.makeText(requireContext(), "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show());
-//
-//        Volley.newRequestQueue(requireContext()).add(stringRequest);
+
 
 
 

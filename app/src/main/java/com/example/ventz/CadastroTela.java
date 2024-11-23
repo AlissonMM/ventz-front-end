@@ -33,12 +33,12 @@ public class CadastroTela extends AppCompatActivity {
         EditText txtNome = findViewById(R.id.txtNome);
         EditText txtEmail = findViewById(R.id.txtEmail);
         EditText txtSenha = findViewById(R.id.txtSenha);
+        EditText txtCpf = findViewById(R.id.txtCpf);
 
         // Configura o RequestQueue
         requestQueue = Volley.newRequestQueue(this);
 
         // Define a URL base do servidor
-
         url = Dados.getInstance().getUrl() + "/usuarios/inserirUsuario";
 
         // Evento de clique para o botão "Voltar"
@@ -53,21 +53,25 @@ public class CadastroTela extends AppCompatActivity {
             // Verifica se algum dos campos está vazio
             if (txtNome.getText().toString().isEmpty() ||
                 txtEmail.getText().toString().isEmpty() ||
-                txtSenha.getText().toString().isEmpty()) {
+                txtSenha.getText().toString().isEmpty() ||
+                txtCpf.getText().toString().isEmpty()) {
 
                 // Mostra uma mensagem de erro para o usuário
                 Toast.makeText(CadastroTela.this, "Por favor, preencha todos os campos!", Toast.LENGTH_SHORT).show();
-                return; // Interrompe a execução se algum campo estiver vazio
+                return;
             }
 
-            // Cria o corpo JSON apenas se todos os campos estiverem preenchidos
+            // Cria o corpo JSON de Usuario
             JSONObject jsonBody = new JSONObject();
             try {
                 jsonBody.put("nome", txtNome.getText().toString());
                 jsonBody.put("email", txtEmail.getText().toString());
                 jsonBody.put("senha", txtSenha.getText().toString());
+                jsonBody.put("cpf", txtCpf.getText().toString());
             } catch (JSONException e) {
                 e.printStackTrace();
+                Toast.makeText(CadastroTela.this, "Erro ao montar os dados", Toast.LENGTH_SHORT).show();
+                return;
             }
 
             // Cria a requisição JsonObjectRequest
@@ -76,18 +80,20 @@ public class CadastroTela extends AppCompatActivity {
                     url,
                     jsonBody,
                     response -> {
-
+                        Toast.makeText(CadastroTela.this, "Erro ao cadastrar Usuário! Entre em contanto com o fabricante...",
+                             Toast.LENGTH_SHORT).show();
                     },
-                    error -> {
-                        // Por algum motivo o codigo so funciona assim 🤓👍
-                        if (error.networkResponse != null) {
+                    error -> {  // Por algum motivo, o código funciona apenas no erro >:(
+                        // Trata os erros
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
                             String errorMessage = new String(error.networkResponse.data);
-                            Toast.makeText(CadastroTela.this, "Error: " + errorMessage, Toast.LENGTH_LONG).show();
+                            Toast.makeText(CadastroTela.this, errorMessage, Toast.LENGTH_LONG).show();
                         } else {
-                            Toast.makeText(CadastroTela.this, "Usuário Cadastrado!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(CadastroTela.this, LoginTela.class);
-                            startActivity(intent);
-                            finish();
+                            Toast.makeText(CadastroTela.this, "Usuário cadastrado com sucesso!",
+                             Toast.LENGTH_SHORT).show();
+                              Intent intent = new Intent(CadastroTela.this, LoginTela.class);
+                              startActivity(intent);
+                        finish();
                         }
                     }
             );

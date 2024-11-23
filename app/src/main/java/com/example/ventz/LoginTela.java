@@ -13,15 +13,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.ventz.model.Dados;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class LoginTela extends AppCompatActivity {
 
     private RequestQueue requestQueue;
     private String url;
-    private int userId; // Variável para armazenar o ID do usuário
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,17 +34,12 @@ public class LoginTela extends AppCompatActivity {
 
         requestQueue = Volley.newRequestQueue(this);
 
-
-
         EditText txtEmail = findViewById(R.id.txtEmail);
         EditText txtSenha = findViewById(R.id.txtSenha);
         Button btnCadastro = findViewById(R.id.btnTelaCadastro);
         Button btnLogin = findViewById(R.id.btnLogin);
 
-//        EditText txtUrl = findViewById(R.id.txtUrl);
-
-
-        Dados.getInstance().setUrl("http://ec2-52-67-12-244.sa-east-1.compute.amazonaws.com:8080");
+        Dados.getInstance().setUrl("http://54.94.207.128:8080");
 
         // Botão para ir para a tela de cadastro
         btnCadastro.setOnClickListener(v -> {
@@ -55,40 +52,47 @@ public class LoginTela extends AppCompatActivity {
         btnLogin.setOnClickListener(v -> {
             String email = txtEmail.getText().toString();
             String senha = txtSenha.getText().toString();
-//            String urlTexto = txtUrl.getText().toString();
 
             if (email.isEmpty() || senha.isEmpty()) {
                 Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-//             Dados.getInstance().setUrl(txtUrl.getText().toString());
             url = Dados.getInstance().getUrl() + "/usuarios/buscarPorEmailESenha";
 
             // Adiciona as credenciais como parâmetros na URL
             String loginUrl = url + "?email=" + email + "&senha=" + senha;
 
-            // Faz a requisição GET usando StringRequest para capturar o ID de resposta
-            StringRequest request = new StringRequest(
+            // Faz a requisição GET usando JsonObjectRequest para lidar com a resposta JSON
+            JsonObjectRequest request = new JsonObjectRequest(
                     Request.Method.GET,
                     loginUrl,
+                    null,
                     response -> {
-                        // Extrai o ID do usuário da string de resposta
-                        String idUsuarioStr = response.substring(response.indexOf("idUsuario=") + 10, response.indexOf(",", response.indexOf("idUsuario=")));
                         try {
-                            userId = Integer.parseInt(idUsuarioStr);
-                            Toast.makeText(LoginTela.this, "Login realizado com sucesso! ID: " + userId, Toast.LENGTH_SHORT).show();
+                            // Obtém o ID do usuário do objeto JSON
+                            int userId = response.getInt("idUsuario");
+                            String nome = response.getString("nome");
+                            String emailApi = response.getString("email");
+                            String cpfApi = response.getString("cpf");
+                            String senhaApi = response.getString("senha");
+
+                            Toast.makeText(LoginTela.this, "Login realizado com sucesso! Nome: " + nome + " ID: " + userId, Toast.LENGTH_SHORT).show();
 
                             // Salva o ID do usuário em uma instância global ou em SharedPreferences
                             Dados.getInstance().setIdUsuarioLogado(userId);
+                            Dados.getInstance().setNomeAtual(nome);
+                            Dados.getInstance().setCpfAtual(cpfApi);
+                            Dados.getInstance().setEmailAtual(emailApi);
+                            Dados.getInstance().setSenhaAtual(senhaApi);
 
                             Intent intent = new Intent(LoginTela.this, MainActivity.class); // Substitua por sua próxima tela
                             startActivity(intent);
                             finish();
 
-                        } catch (NumberFormatException e) {
+                        } catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(LoginTela.this, "Erro ao processar ID do usuário", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginTela.this, "Erro ao processar resposta JSON", Toast.LENGTH_SHORT).show();
                         }
                     },
                     error -> {

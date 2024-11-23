@@ -63,7 +63,7 @@
                 app:layout_constraintVertical_bias="0.523" />
 
             <TextView
-                android:id="@+id/textView10"
+                android:id="@+id/labelCpf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="123.456.789-09"

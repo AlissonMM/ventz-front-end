@@ -64,39 +64,38 @@ public class IngressosFragment extends Fragment {
         dialog.setContentView(R.layout.deck_dialog_box);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.setCancelable(false);
-        Button btnMostrarData = dialog.findViewById(R.id.btnMostrarData);
         EditText txtDataInicio = dialog.findViewById(R.id.txtDataInicio);
 
         EditText txtDataTermino = dialog.findViewById(R.id.txtDataTermino);
 
-        // btnMostrarData add on click event
-        btnMostrarData.setOnClickListener(v -> {
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH", Locale.getDefault());
-        dateFormat.setLenient(false); // Strict parsing to avoid invalid dates
-
-        try {
-        // Parse txtDataInicio
-        Date txtDataInicioFormatada = dateFormat.parse(txtDataInicio.getText().toString());
-
-        // Parse txtDataTermino
-        Date txtDataTerminoFormatada = dateFormat.parse(txtDataTermino.getText().toString());
-
-        // If both dates are valid, show them
-        Toast.makeText(getContext(),
-            "Valid dates:\nStart: " + txtDataInicioFormatada.toString() +
-            "\nEnd: " + txtDataTerminoFormatada.toString(),
-            Toast.LENGTH_LONG).show();
-
-    } catch (ParseException e) {
-        // Handle invalid date format
-        Toast.makeText(getContext(), "Invalid date format. Use YYYY-MM-DD HH.", Toast.LENGTH_SHORT).show();
-    }
-
-
-           // show text on screen
-            Toast.makeText(getContext(), txtDataInicio.getText(), Toast.LENGTH_SHORT).show();
-        });
+//        // btnMostrarData add on click event
+//        btnMostrarData.setOnClickListener(v -> {
+//
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH", Locale.getDefault());
+//        dateFormat.setLenient(false); // Strict parsing to avoid invalid dates
+//
+//        try {
+//        // Parse txtDataInicio
+//        Date txtDataInicioFormatada = dateFormat.parse(txtDataInicio.getText().toString());
+//
+//        // Parse txtDataTermino
+//        Date txtDataTerminoFormatada = dateFormat.parse(txtDataTermino.getText().toString());
+//
+//        // If both dates are valid, show them
+//        Toast.makeText(getContext(),
+//            "Valid dates:\nStart: " + txtDataInicioFormatada.toString() +
+//            "\nEnd: " + txtDataTerminoFormatada.toString(),
+//            Toast.LENGTH_LONG).show();
+//
+//    } catch (ParseException e) {
+//        // Handle invalid date format
+//        Toast.makeText(getContext(), "Invalid date format. Use YYYY-MM-DD HH.", Toast.LENGTH_SHORT).show();
+//    }
+//
+//
+//           // show text on screen
+//            Toast.makeText(getContext(), txtDataInicio.getText(), Toast.LENGTH_SHORT).show();
+//        });
 
 
 
