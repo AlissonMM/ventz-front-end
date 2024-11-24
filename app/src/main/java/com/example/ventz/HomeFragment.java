@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -175,6 +176,7 @@ btnCriar.setOnClickListener(v -> {
         try {
             SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
             Date date = inputFormat.parse(dataInicio);
+
             SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
             dataInicioFormatada = outputFormat.format(date);
         } catch (ParseException e) {
@@ -255,7 +257,7 @@ btnCriar.setOnClickListener(v -> {
                     Toast.makeText(getContext(), "Erro na requisição: " + errorMessage + " (Código: " + statusCode + ")", Toast.LENGTH_LONG).show();
                 } else {
 //                    Log.e("ERROR", "Erro desconhecido: " + error.getMessage());
-                    Toast.makeText(getContext(), "Evento cadastro com sucesso!.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Evento cadastrado com sucesso!.", Toast.LENGTH_SHORT).show();
                     EditText nomeDeck = dialog.findViewById(R.id.textViewNomeDeck);
 
         EditText descricao = dialog.findViewById(R.id.txtMultilineDescricao);
@@ -311,11 +313,15 @@ btnCriar.setOnClickListener(v -> {
         });
 
 
+        listView.setOnItemClickListener((parent, view1, position, id) -> {
 
+                    // Define o evento atual no singleton Dados
+                    Dados.getInstance().setIdEventoAtual(eventos.get(position).getIdEvento());
 
+                    inserirIngresso();
 
-
-
+                }
+        );
 
         return view;
     }
@@ -409,6 +415,47 @@ btnCriar.setOnClickListener(v -> {
             txtLimite.setText("");
 
             nomeDeck.requestFocus();
+        }
+
+        // Método para inserir ingresso
+        private void inserirIngresso() {
+            String urlInserirIngresso = Dados.getInstance().getUrl() + "/ingressos/inserirIngresso";
+
+            // Monta o JSON simplificado com os dados do ingresso
+            JSONObject ingressoJson = new JSONObject();
+            try {
+                ingressoJson.put("disponivel", true);
+
+                // Dados do evento (apenas ID)
+                JSONObject eventoJson = new JSONObject();
+                eventoJson.put("idEvento", Dados.getInstance().getIdEventoAtual());
+                ingressoJson.put("evento", eventoJson);
+
+                // Dados do usuário (apenas ID)
+                JSONObject usuarioJson = new JSONObject();
+                usuarioJson.put("idUsuario", Dados.getInstance().getIdUsuarioLogado());
+                ingressoJson.put("usuario", usuarioJson);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return; // Interrompe a execução em caso de erro
+            }
+
+            // Envia o JSON para a API usando um POST request
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, urlInserirIngresso, ingressoJson,
+                    response -> {
+                        // Sucesso
+
+                    },
+                    error -> {
+                        // Erro kkkkkkkkkkkkk
+                        Toast.makeText(getContext(), "Ingresso inserido com sucesso!", Toast.LENGTH_SHORT).show();
+                    }
+            );
+
+            // Adiciona o request à fila
+            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+            requestQueue.add(request);
         }
 }
 

@@ -19,7 +19,7 @@
             android:id="@+id/labelNomeEvento"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Meu Pequeno Evento"
+            android:text="Carregando..."
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -76,7 +76,7 @@
             app:layout_constraintVertical_bias="0.3" />
 
         <TextView
-            android:id="@+id/textView15"
+            android:id="@+id/txtDataTerminoIngresso"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="380dp"
@@ -89,7 +89,7 @@
             app:layout_constraintVertical_bias="0.063" />
 
         <EditText
-            android:id="@+id/editTextTextMultiLine2"
+            android:id="@+id/multilineDescricao"
             android:layout_width="364dp"
             android:layout_height="240dp"
             android:ems="10"
@@ -115,14 +115,14 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine2"
+            app:layout_constraintTop_toBottomOf="@+id/multilineDescricao"
             app:srcCompat="@drawable/yasuo" />
 
         <TextView
-            android:id="@+id/txtIdIngresso"
+            android:id="@+id/txtIngressoAtual"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="bunda"
+            android:text="id ingresso"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.065"

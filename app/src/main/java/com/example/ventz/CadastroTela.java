@@ -52,9 +52,9 @@ public class CadastroTela extends AppCompatActivity {
         btnCadastrar.setOnClickListener(v -> {
             // Verifica se algum dos campos está vazio
             if (txtNome.getText().toString().isEmpty() ||
-                txtEmail.getText().toString().isEmpty() ||
-                txtSenha.getText().toString().isEmpty() ||
-                txtCpf.getText().toString().isEmpty()) {
+                    txtEmail.getText().toString().isEmpty() ||
+                    txtSenha.getText().toString().isEmpty() ||
+                    txtCpf.getText().toString().isEmpty()) {
 
                 // Mostra uma mensagem de erro para o usuário
                 Toast.makeText(CadastroTela.this, "Por favor, preencha todos os campos!", Toast.LENGTH_SHORT).show();
@@ -81,7 +81,7 @@ public class CadastroTela extends AppCompatActivity {
                     jsonBody,
                     response -> {
                         Toast.makeText(CadastroTela.this, "Erro ao cadastrar Usuário! Entre em contanto com o fabricante...",
-                             Toast.LENGTH_SHORT).show();
+                                Toast.LENGTH_SHORT).show();
                     },
                     error -> {  // Por algum motivo, o código funciona apenas no erro >:(
                         // Trata os erros
@@ -90,10 +90,10 @@ public class CadastroTela extends AppCompatActivity {
                             Toast.makeText(CadastroTela.this, errorMessage, Toast.LENGTH_LONG).show();
                         } else {
                             Toast.makeText(CadastroTela.this, "Usuário cadastrado com sucesso!",
-                             Toast.LENGTH_SHORT).show();
-                              Intent intent = new Intent(CadastroTela.this, LoginTela.class);
-                              startActivity(intent);
-                        finish();
+                                    Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(CadastroTela.this, LoginTela.class);
+                            startActivity(intent);
+                            finish();
                         }
                     }
             );

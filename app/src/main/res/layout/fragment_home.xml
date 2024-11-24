@@ -45,8 +45,12 @@
         android:id="@+id/btnCriarEvento"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="323dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="300dp"
+        android:layout_marginBottom="666dp"
         android:text="+" />
 
     <ImageButton

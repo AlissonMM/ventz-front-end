@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -18,7 +19,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.ventz.model.Dados;
 
 import org.json.JSONException;
-import org.json.JSONObject;
+
 
 public class LoginTela extends AppCompatActivity {
 
@@ -32,12 +33,14 @@ public class LoginTela extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_login_tela);
 
-        requestQueue = Volley.newRequestQueue(this);
+       
 
         EditText txtEmail = findViewById(R.id.txtEmail);
         EditText txtSenha = findViewById(R.id.txtSenha);
         Button btnCadastro = findViewById(R.id.btnTelaCadastro);
         Button btnLogin = findViewById(R.id.btnLogin);
+
+        requestQueue = Volley.newRequestQueue(this);
 
         Dados.getInstance().setUrl("http://54.94.207.128:8080");
 

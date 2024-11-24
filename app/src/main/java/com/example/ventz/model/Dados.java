@@ -1,19 +1,27 @@
 package com.example.ventz.model;
 
+import java.util.Date;
+
 public class Dados {
     private static Dados instance;
     private String url;
     private int idUsuarioLogado;
     private int idEventoAtual;
-    private String nomeEventoAtual;
+    private String tituloEventoAtual;
     private String emailAtual;
     private String cpfAtual;
     private String nomeAtual;
     private String senhaAtual;
-
+    private String enderecoAtual;
+    private String descricaoAtual;
+    private Date dataInicioAtual;
+    private Date dataTerminoAtual;
     private int idIngressoAtual;
 
-    private Dados() { }
+
+    private Dados() {
+
+    }
 
     // Ele instancia Dados se necessário
     public static synchronized Dados getInstance() {
@@ -51,12 +59,12 @@ public class Dados {
         this.idEventoAtual = idEventoAtual;
     }
 
-    public String getNomeEventoAtual() {
-        return nomeEventoAtual;
+    public String getTituloEventoAtual() {
+        return tituloEventoAtual;
     }
 
-    public void setNomeEventoAtual(String nomeEventoAtual) {
-        this.nomeEventoAtual = nomeEventoAtual;
+    public void setTituloEventoAtual(String tituloEventoAtual) {
+        this.tituloEventoAtual = tituloEventoAtual;
     }
 
     public String getEmailAtual() {
@@ -91,6 +99,38 @@ public class Dados {
         this.senhaAtual = senhaAtual;
     }
 
+    public String getEnderecoAtual() {
+        return enderecoAtual;
+    }
+
+    public void setEnderecoAtual(String enderecoAtual) {
+        this.enderecoAtual = enderecoAtual;
+    }
+
+    public String getDescricaoAtual() {
+        return descricaoAtual;
+    }
+
+    public void setDescricaoAtual(String descricaoAtual) {
+        this.descricaoAtual = descricaoAtual;
+    }
+
+    public Date getDataInicioAtual() {
+        return dataInicioAtual;
+    }
+
+    public void setDataInicioAtual(Date dataInicioAtual) {
+        this.dataInicioAtual = dataInicioAtual;
+    }
+
+    public Date getDataTerminoAtual() {
+        return dataTerminoAtual;
+    }
+
+    public void setDataTerminoAtual(Date dataTerminoAtual) {
+        this.dataTerminoAtual = dataTerminoAtual;
+    }
+
     public int getIdIngressoAtual() {
         return idIngressoAtual;
     }
@@ -99,3 +139,4 @@ public class Dados {
         this.idIngressoAtual = idIngressoAtual;
     }
 }
+
