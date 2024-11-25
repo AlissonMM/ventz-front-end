@@ -46,10 +46,9 @@
             android:text="Data de Início"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.152"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.262" />
+            app:layout_constraintVertical_bias="0.193" />
 
         <TextView
             android:id="@+id/labelDataEncerramento"
@@ -58,10 +57,9 @@
             android:text="Data de Encerramento"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.729"
-            app:layout_constraintStart_toEndOf="@+id/labelDataInicio"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.262" />
+            app:layout_constraintVertical_bias="0.247" />
 
         <TextView
             android:id="@+id/txtDataInicioIngresso"
@@ -70,23 +68,22 @@
             android:text="xx/xx/xxxx xx"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.134"
+            app:layout_constraintHorizontal_bias="0.503"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.3" />
+            app:layout_constraintVertical_bias="0.22" />
 
         <TextView
             android:id="@+id/txtDataTerminoIngresso"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="380dp"
             android:text="yy/yy/yyyy yy"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.691"
-            app:layout_constraintStart_toEndOf="@+id/txtDataInicioIngresso"
-            app:layout_constraintTop_toBottomOf="@+id/labelDataEncerramento"
-            app:layout_constraintVertical_bias="0.063" />
+            app:layout_constraintHorizontal_bias="0.503"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.273" />
 
         <EditText
             android:id="@+id/multilineDescricao"
@@ -125,10 +122,9 @@
             android:text="id ingresso"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.065"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.713" />
+            app:layout_constraintVertical_bias="0.686" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

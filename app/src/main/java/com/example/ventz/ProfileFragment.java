@@ -2,11 +2,14 @@ package com.example.ventz;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +19,18 @@ import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.ventz.model.Dados;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
+
+import org.json.JSONException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,6 +47,8 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private String scannedValue;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -98,20 +110,10 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 Toast.makeText(requireContext(), "Abrindo leitor de QR Code...", Toast.LENGTH_SHORT).show();
                 scanCode();
+//                 Toast.makeText(requireContext(), "Id scaneado: " + qrResult, Toast.LENGTH_SHORT).show();
             }
         });
 
-        // You can now set text or other properties on txtNome
-
-
-
-
-
-
-
-
-
-//        return inflater.inflate(R.layout.fragment_profile, container, false);
         return view;
     }
 
@@ -134,6 +136,7 @@ public class ProfileFragment extends Fragment {
         builder.setMessage(result.getContents());
 
         qrResult = result.getContents(); // #######
+        validarIngresso(qrResult);
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -143,4 +146,39 @@ public class ProfileFragment extends Fragment {
         }).show();
 
     });
+
+   private void validarIngresso(String idIngresso) {
+       String url = Dados.getInstance().getUrl() + "/ingressos/utilizarIngresso/" + qrResult;
+
+       RequestQueue queue = Volley.newRequestQueue(getContext());
+
+       // Realiza a requisição POST
+
+       new Handler(Looper.getMainLooper()).postDelayed(() -> {
+           StringRequest request = new StringRequest(
+                   Request.Method.PUT,
+                   url,
+                   response -> {
+                       // Verifica o conteúdo da resposta retornada pela API
+                       if (response.equals("O ingresso já foi utilizado.")) {
+                           Toast.makeText(getContext(), "O ingresso já foi utilizado.", Toast.LENGTH_SHORT).show();
+                       } else if (response.equals("Ingresso utilizado com sucesso.")) {
+                           Toast.makeText(getContext(), "Ingresso utilizado com sucesso!", Toast.LENGTH_SHORT).show();
+                       } else {
+                           Toast.makeText(getContext(), "Resposta inesperada: " + response, Toast.LENGTH_SHORT).show();
+                       }
+                   },
+                   error -> {
+                       // Trata possíveis erros na requisição
+                       error.printStackTrace();
+                       Toast.makeText(getContext(), "Ingresso já utilizado!", Toast.LENGTH_SHORT).show();
+                   }
+           );
+
+           // Adiciona a requisição à fila de execução
+           queue.add(request);
+
+       }, 3000); // 3000 milliseconds = 3 seconds
+   }
+
 }

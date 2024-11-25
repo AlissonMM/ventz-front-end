@@ -72,7 +72,7 @@ public class DeckTela extends AppCompatActivity {
                  multilineDescricao.setText(Dados.getInstance().getDescricaoAtual());
 //
                 try {
-                    BitMatrix bitMatrix = multiFormatWriter.encode(Dados.getInstance().getUrl() + "/ingressos/utilizarIngresso/" + Dados.getInstance().getIdIngressoAtual(), BarcodeFormat.QR_CODE, 300, 300);
+                    BitMatrix bitMatrix = multiFormatWriter.encode(String.valueOf(Dados.getInstance().getIdIngressoAtual()), BarcodeFormat.QR_CODE, 300, 300);
 
                     BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
                     Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);

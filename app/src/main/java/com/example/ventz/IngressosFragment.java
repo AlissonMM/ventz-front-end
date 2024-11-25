@@ -22,6 +22,7 @@ import com.example.ventz.model.Dados;
 import com.example.ventz.model.Deck;
 import com.example.ventz.model.Ingresso;
 import com.example.ventz.model.IngressoAdapter;
+import com.google.android.material.snackbar.Snackbar;
 //import com.example.ventz.model.DeckAdapter;
 
 import org.json.JSONArray;
@@ -129,7 +130,7 @@ public class IngressosFragment extends Fragment {
         listView.setAdapter(adapter);
 
         int idUsuarioLogado = Dados.getInstance().getIdUsuarioLogado(); // Pega o ID do usuário logado
-        buscarIngressosUsuario(ingressos, adapter);
+        buscarIngressosUsuario(idUsuarioLogado, ingressos, adapter);
 
         listView.setOnItemClickListener((parent, view1, position, id) -> {
 
@@ -152,9 +153,11 @@ public class IngressosFragment extends Fragment {
 
 
 
-    private void buscarIngressosUsuario(List<Ingresso> ingressos, IngressoAdapter adapter) {
-        String urlBuscarIngressos =  Dados.getInstance().getUrl() + "/ingressos/buscarTodos";
+    private void buscarIngressosUsuario(int idUsuario, List<Ingresso> ingressos, IngressoAdapter adapter) {
+        // Monta a URL com o ID do usuário
+        String urlBuscarIngressos = Dados.getInstance().getUrl() + "/ingressos/buscarPorUsuario/" + idUsuario;
 
+        // Requisição para buscar os ingressos
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, urlBuscarIngressos, null,
                 response -> {
                     // Limpa a lista de ingressos antes de atualizar
@@ -166,48 +169,29 @@ public class IngressosFragment extends Fragment {
                             int idIngresso = ingressoJson.getInt("idIngresso");
                             JSONObject eventoJson = ingressoJson.getJSONObject("evento");
                             int idEvento = eventoJson.getInt("idEvento");
-                            int idUsuarioIngresso = ingressoJson.getJSONObject("usuario").getInt("idUsuario");
                             boolean disponivel = ingressoJson.getBoolean("disponivel");
 
                             // Adiciona o ingresso à lista
-                            ingressos.add(new Ingresso(idIngresso, idEvento, idUsuarioIngresso, disponivel));
+                            ingressos.add(new Ingresso(idIngresso, idEvento, idUsuario, disponivel));
                         }
 
                         // Notifica o adapter sobre a atualização
                         adapter.notifyDataSetChanged();
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(getContext(), "Erro ao processar ingressos", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(requireView(), "Erro ao processar ingressos", Snackbar.LENGTH_SHORT).show();
                     }
                 },
                 error -> {
+                    // Em caso de erro, limpa a lista e exibe mensagem
                     ingressos.clear();
-                    try {
-                        JSONArray response = new JSONArray(); // Apenas para simular a estrutura de sucesso no erro
-                        // Itera pelo JSON Array e adiciona os ingressos à lista
-                        for (int i = 0; i < response.length(); i++) {
-                            JSONObject ingressoJson = response.getJSONObject(i);
-                            int idIngresso = ingressoJson.getInt("idIngresso");
-                            JSONObject eventoJson = ingressoJson.getJSONObject("evento");
-                            int idEvento = eventoJson.getInt("idEvento");
-                            int idUsuarioIngresso = ingressoJson.getJSONObject("usuario").getInt("idUsuario");
-                            boolean disponivel = ingressoJson.getBoolean("disponivel");
-
-                            // Adiciona o ingresso à lista
-                            ingressos.add(new Ingresso(idIngresso, idEvento, idUsuarioIngresso, disponivel));
-                        }
-
-                        // Notifica o adapter sobre a atualização
-                        adapter.notifyDataSetChanged();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(getContext(), "Erro ao processar ingressos (fallback)", Toast.LENGTH_SHORT).show();
-                    }
+                    adapter.notifyDataSetChanged();
+                    Snackbar.make(requireView(), "Nenhum ingresso encontrado", Snackbar.LENGTH_SHORT).show();
                 }
         );
 
-        // Adiciona a requisição à fila
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        requestQueue.add(request);
+        // Adiciona a requisição à fila de requisições
+        RequestQueue queue = Volley.newRequestQueue(requireContext());
+        queue.add(request);
     }
 }
