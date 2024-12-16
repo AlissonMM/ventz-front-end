@@ -87,7 +87,7 @@ O **Ventz** foi desenvolvido utilizando tecnologias modernas e boas práticas de
 - Leonardo Costa Lima  
 
 ### Hospedagem AWS  
-- Leonardo Costa Lima  
+- Henrique Barreto 
 
 ### Banco de Dados  
 - Alisson Mayer Medeji  
